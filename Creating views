@@ -1,0 +1,4 @@
+CREATE VIEW ML
+as
+select FirstName, LastName, EmailPromotion
+from Person.Person
