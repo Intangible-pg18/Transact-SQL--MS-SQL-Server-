@@ -1,0 +1,33 @@
+1. Logical Processing -> How the query is constructed -> Syntax and style
+2. Physical Processing -> How the result is obtained -> Database engine must figure out how to get the results
+
+Queries are written in this order-: 
+   SELECT
+   FROM 
+   WHERE
+   GROUP BY
+   HAVING
+   ORDER BY
+But the queries are executed in this order-:
+   FROM
+   WHERE 
+   GROUP BY
+   HAVING
+   SELECT
+   ORDER BY
+   
+Query Optimization-:
+                    1. Parsing -> Parsed for syntax, object existance (binding), permission etc and translates the SQL query into a tree of logical operators representing the 
+                                  high-level steps required to execute the query.
+                    2. Generate Execution plans -> Different ways to produce the result set are created
+                    3. Cost assessment of plans -> Which way is most efficient
+                    4. Query execution and plan caching -> The chosen plan is executed and cached for later use
+                    
+Best Practices for writing queries in SQL-:
+1. Don't use SELECT * in a production environment
+2. Avoid unnecessary columns in the SELECT list
+3. Avoid unnecessary tables in joins
+4. Avoid using OR if possible
+5. Avoid using NOT if possible
+6. Use SCHEMA.TABLE naming in your queries
+7. Always include a WHERE clause if possible.
