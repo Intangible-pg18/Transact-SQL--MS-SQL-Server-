@@ -99,3 +99,15 @@ OFFSET-FETCH-: OFFSET-: Skip n rows.
                Has the ability to skip rows in contrast to TOP.
                Useful for creating results-paging functionality.
                e.g. select distinct firstname,lastname from person.person order by lastname asc, firstname asc OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY;
+               
+Ranking-: Data Analysis function in T-SQL.
+          Applied to a set of rows and returns a single value.
+          Returns a ranking value for each row.
+          Result can be divided into partitions.
+          Each partition gets its own ranking value.
+          Types-: RANK-: Returns the rank of each row within the partition of a result set.
+                         Does not always returns consecutive integers (In case of a Tie).
+                  DENSE-RANK-: Same functionality as RANK, but without any gaps in the integers.
+                  NTILE-: Distributes the returned rows into a specified number of groups.
+                  ROW_NUMBER-: Returns the sequencial no. of a row within a partition of a result set starting at 1 for the first row in each partition.
+           e.g. select entityid , rate from humanresources.employeepayhistory order by rate desc
