@@ -78,12 +78,24 @@ UNION-: Combines the result of two or more queries into a single result set.
                The number and order of columns must be the same in all queries.
         e.g. select lastname,firstname into test1 from person.person where lastname like 'Del%'
              select lastname,firstname into test2 from person.person where lastname like 'Abe%'
-             select lastname,firstname from test1 UNION ALL select lastname,firstname from test2 order by firstname
+             select lastname,firstname from test1 UNION ALL select lastname,firstname from test2 order by firstname;
              
 INTERSECT & EXCEPT-: Common to both tables and Not common to both tables, respectively.
                      Intersect-: Returns distinct values that are returned from both the lest and right side.
                      Except-: Returns distinct values that are found in the left query that are not found on the right query.
-                     e.g. select entityid from person.person INTERSECT (or EXCEPT) select entityid from humanresources.employee
+                     e.g. select entityid from person.person INTERSECT (or EXCEPT) select entityid from humanresources.employee;
                      
 Synonyms-: Provide alternate names for database objects. 
            Note-: Used to provide a layer of abstraction 
+           e.g. select * into test100 from humanresources.employee CREATE SYNONYM mltable for dbo.test100;
+           Opps!!! The name of the original table was changed to test200
+           Soln-: DROP SYNONYM MLTable CREATE SYNONYM MLTable For dbo.test200;
+                
+OFFSET-FETCH-: OFFSET-: Skip n rows.
+               FETCH-: FETCH NEXT n rows.
+               A result set filtering option similar to TOP.
+               Used after ORDER BY.
+               Limits the no. of rows returned.
+               Has the ability to skip rows in contrast to TOP.
+               Useful for creating results-paging functionality.
+               e.g. select distinct firstname,lastname from person.person order by lastname asc, firstname asc OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY;
