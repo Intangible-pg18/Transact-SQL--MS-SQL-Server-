@@ -1,0 +1,62 @@
+Used to retrieve data
+
+Accessibility-: The ability to execute SELECT statement is based on permissions. Membership in the following roles provide SELECT permission -:
+-> If you are a member of db_datareader role    OR    db_owner role   OR    sysadmin role
+
+Structure-: 
+           ~SELECT-: Specifies the columns to be returned by the query
+           ~FROM-: Specifies the tables,views,derived tables and joined tables to be used in the query
+           ~WHERE-: Specifies the search condition for the requested rows (Operators-: =,<>,>,<,>=,<=,BETWEEN,LIKE)
+           ~GROUP BY-: Groups a selected set of rows into a set of summary rows by the values of one or more coloumns or expressions. One row is returned for each group.
+           ~HAVING-: Specifies a search condtition for a group
+           ~ORDER BY-: Determines the order of the result set.
+Note-: WHERE clause should always be included (except in class).
+           
+TOP clause-: is used to limit rows to a specified number. A percentage of rows can also be returned using TOP PERCENT. Two or more rows that tie can also be returned using
+             WITH TIES. Note-: ORDER BY should always be used with the TOP clause. 
+             e.g. SELECT TOP 100 * from person.person;
+                  SELECT TOP 10 PERCENT * from person.person;
+              
+ORDER BY clause-: Sorts the data that is being returned by a query. 
+                  By default it sorts the data in ascending order.
+                  NULLs are treated as the lowest possible value.
+                  OFFSET and FETCH can be used to control the no. of rows returned.
+                  e.g. select LastName, FirstName from Person.Person order by LastName DESC;
+                       select LastName, FirstName from Person.Person order by LastName, FirstName;
+                       select LastName, FirstName from Person.Person order by LastName ASC, FirstName DESC;
+     
+Working with NULLs-: IS NULL
+                     IS NOT NULL
+                     e.g. select Title, FirstName from Person.Person where Title IS NOT NULL order by FirstName;
+                     
+Concatenation-: Merging two or more columns together in the output.
+                e.g. select FirstName + LastName from Person.Person ;
+                     select FirstName + ' ' + LastName from Person.Person; 
+                     
+Column aliasing-: Technique of renaming a column just for that one particular query result.
+                  e.g. select firstname as first, lastname as last from person.person;
+                  OR
+                       select firstname first, lastname last from person.person;
+                       
+DISTINCT keyword-: Prevents the retrieval of duplicate items.
+                   Returns the first instance of a value and ignores other occurances.
+                   Can be used with AVG and SUM functions.
+                   e.g. select distinct countryregioncode from sales.sealesterritory;
+                   select distinct countryregioncode, zipid from sales.salesterritory;
+                  
+Aggregate functions -: SUM -> select SUM(uniprice) 'SUM TOTAL' from sales.salesorderdetail; select SUM(uniprice) 'SUM TOTAL' from sales.salesorderdetail where specialid=4;
+                       AVG -> select AVG(uniprice) 'AVERAGE' from sales.salesorderdetail;
+                       COUNT -> select COUNT(uniprice) 'Total Entries' from sales.salesorderdetail where specialid=4;
+                       
+GROUP BY-: Groups a selected set of rows into a set of summary rows.
+           Note-: Every column that is not part of the GROUP BY clause must be using an aggregate function. (So it returns a single value for the group)
+           e.g. select CountryRegionCode, sum(salesytd) from sales.SalesTerritory where salesytd>4000000 GROUP BY CountryRegionCode;
+           
+HAVING-: The WHERE clause for the GROUP BY clause.
+         e.g. select CountryRegionCode, SUM(SalesYTD) from Sales.SalesTerritory where SalesYTD>4000000 GROUP BY CountryRegionCode HAVING SUM(SalesYTD)>6000000
+           
+                  
+                  
+                  
+                  
+                  
