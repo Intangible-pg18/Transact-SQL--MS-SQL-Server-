@@ -42,7 +42,7 @@ DISTINCT keyword-: Prevents the retrieval of duplicate items.
                    Returns the first instance of a value and ignores other occurances.
                    Can be used with AVG and SUM functions.
                    e.g. select distinct countryregioncode from sales.sealesterritory;
-                   select distinct countryregioncode, zipid from sales.salesterritory;
+                        select distinct countryregioncode, zipid from sales.salesterritory;
                   
 Aggregate functions -: SUM -> select SUM(uniprice) 'SUM TOTAL' from sales.salesorderdetail; select SUM(uniprice) 'SUM TOTAL' from sales.salesorderdetail where specialid=4;
                        AVG -> select AVG(uniprice) 'AVERAGE' from sales.salesorderdetail;
@@ -53,10 +53,37 @@ GROUP BY-: Groups a selected set of rows into a set of summary rows.
            e.g. select CountryRegionCode, sum(salesytd) from sales.SalesTerritory where salesytd>4000000 GROUP BY CountryRegionCode;
            
 HAVING-: The WHERE clause for the GROUP BY clause.
-         e.g. select CountryRegionCode, SUM(SalesYTD) from Sales.SalesTerritory where SalesYTD>4000000 GROUP BY CountryRegionCode HAVING SUM(SalesYTD)>6000000
-           
+         e.g. select CountryRegionCode, SUM(SalesYTD) from Sales.SalesTerritory where SalesYTD>4000000 GROUP BY CountryRegionCode HAVING SUM(SalesYTD)>6000000;
+         
+
+SELECT INTO-: creates a new table in the default filegroup and inserts the resulting rows from the query into it.
+              Note-: It creates a new table based on the columns included in the SELECT column.
+              e.g. select Name, [group], region INTO SalesNewTable from sales.salesTerritory;                  
                   
-                  
-                  
-                  
-                  
+T-SQLs Wildcard characters-: %-: Any string of zero or more characters.
+                             _-: Any single character
+                             []-: Any single character within the specified range or set.
+                             [^]-: Any single character not within the specified range or set.
+LIKE & IN-: 1. Using LIKE in a WHERE clause, causes the WHERE condition to match a specified string pattern.
+            2. Using IN in a WHERE clause, determines whether a specified value matches any value in a subquery or list.
+            e.g. select Firstname, lastname from person.person where lastname LIKE 'W%'; -> Watson,Watters,Watts,Waxman etc
+                 select Firstname, lastname from person.person where lastname LIKE 'W_x%'; -> Waxman
+                 select Firstname, lastname from person.person where lastname LIKE '[adr]%'; -> All starting with a or d or r.
+                 select Firstname, lastname from person.person where lastname LIKE '[a-f]%'; -> All starting with a,b,c,d,e,f.
+                 select Firstname, lastname from person.person where lastname LIKE '[^a-f]%'; -> All starting with characters not within the range a-f.
+                 select Firstname, lastname from person.person where lastname IN ('Russell','Ryan','Diaz'); -> All lastnames same as Russell, Ryan and Diaz.
+                 
+UNION-: Combines the result of two or more queries into a single result set.
+        Note-: By default, duplicate rows will be removed. (Use ALL keyword to include them).
+               The number and order of columns must be the same in all queries.
+        e.g. select lastname,firstname into test1 from person.person where lastname like 'Del%'
+             select lastname,firstname into test2 from person.person where lastname like 'Abe%'
+             select lastname,firstname from test1 UNION ALL select lastname,firstname from test2 order by firstname
+             
+INTERSECT & EXCEPT-: Common to both tables and Not common to both tables, respectively.
+                     Intersect-: Returns distinct values that are returned from both the lest and right side.
+                     Except-: Returns distinct values that are found in the left query that are not found on the right query.
+                     e.g. select entityid from person.person INTERSECT (or EXCEPT) select entityid from humanresources.employee
+                     
+Synonyms-: Provide alternate names for database objects. 
+           Note-: Used to provide a layer of abstraction 
