@@ -1,0 +1,18 @@
+SELECT Firstname, lastname from person.person WHERE businessentityid in (SELECT DISTINCT Salespersonid from sales.salesorderheader)
+
+Forms of results-: Scalar-: e.g. select salesorderid,totaldue from sales.salesorderheader where totaldue=(select max(totaldue) from sales.salesorderheader)
+                   Multi-valued-: e.g. select businessentityid, title,firstname,lastname from person.person where title='Mr.' and businessentityid in (select 
+                                  businessentityid from humanresources.employee)
+                   Table-valued-: 
+           
+Types-: Simple-: Inner query produces a single result that is used by the main query. Inner one returns a single value,list of values from a single columns or T/F.
+        Correlated-: Depends on a value in the outer query.
+                     e.g. select p.businessentityid, p.firstname salesperson from person person.person p where EXISTS (select * from salesorderheader s
+                          where totaldue>150000 and p.businessentityid=s.salespersonid) -> INNER QUERY RETURNS T/F
+    
+
+                   
+Subquery VS Join-: Most subqueries can be re-written as join queries.
+                   Joins are faster. (Only in the case of checking for existance of data)
+                   Subqueries are easier to read.
+                   Choose wisely.
