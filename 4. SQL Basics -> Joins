@@ -1,0 +1,56 @@
+NORMALIZATION-: is a database design technique that reduces data redundancy and eliminates undesirable characteristics like Insertion, Update and Deletion Anomalies.
+                Normalization rules divides larger tables into smaller tables and links them using relationships.
+                
+Key-: is a value used to identify a record in a table uniquely. A KEY could be a single column or combination of multiple columns
+      Note: Columns in a table that are NOT used to identify a record uniquely are called non-key columns.  
+      
+Primary Key-:  A primary is a single column value used to identify a database record uniquely. It has following attributes
+               A primary key cannot be NULL
+               A primary key value must be unique
+              The primary key must be given a value when a new record is inserted.
+              
+Composite key-: is a primary key composed of multiple columns used to identify a record uniquely.      
+      
+Foreign Key-: references the primary key of another Table! It helps connect your Tables
+              A foreign key can have a different name from its primary key
+              It ensures rows in one table have corresponding rows in another
+              Unlike the Primary key, they do not have to be unique. Most often they aren't
+              Foreign keys can be null even though primary keys can not 
+              You will only be able to insert values into your foreign key that exist in the unique key in the parent table. This helps in referential integrity.
+      
+Transitive functional dependency-: is when changing a non-key column, might cause any of the other non-key columns to change.       
+      
+Joins-: are queries that retrieve data from more than one table.      
+        Types-: Inner-: Displays only the rows that have a match in both joined tables.
+                e.g. SELECT        
+                     Person.Person.FirstName, 
+                     Person.Person.LastName, 
+                     Person.PersonPhone.PhoneNumber
+                     FROM Person.Person 
+                     INNER JOIN
+                     Person.PersonPhone 
+                     ON Person.Person.BusinessEntityID = Person.PersonPhone.BusinessEntityID
+                Outer-: Includes rows even if they do not have related rows in the joined table
+                        Left Outer Join-: All rows in the left table; only the matches in the right
+                        e.g. SELECT        
+                             p.BusinessEntityID,
+                             p.FirstName, 
+                             p.middlename,
+                             p.LastName, 
+                             ph.PhoneNumber
+                             FROM Person.Person p
+                             LEFT OUTER JOIN
+                             Person.PersonPhone ph
+                             ON p.BusinessEntityID = ph.BusinessEntityID
+                        Right Outer Join-: All rows in the right table; only the matches in the left
+                        Full Outer Join-: All rows in all joined tables are included.
+                Cross-: Includes one row for each possible pairing of rows from each table.
+                        e.g.select distinct TOP 5 FirstName, LastName INTO PersonCross from person.person
+                            select  distinct TOP 5  PhoneNumber INTO PhoneCross from person.personphone 
+                            select * from personcross
+                            select * from phonecross
+                            select p.FirstName, p.LastName, ph.PhoneNumber
+                            from
+                            personcross p
+                            cross join
+                            phonecross ph     
