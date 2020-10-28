@@ -110,4 +110,16 @@ Ranking-: Data Analysis function in T-SQL.
                   DENSE-RANK-: Same functionality as RANK, but without any gaps in the integers.
                   NTILE-: Distributes the returned rows into a specified number of groups.
                   ROW_NUMBER-: Returns the sequencial no. of a row within a partition of a result set starting at 1 for the first row in each partition.
-           e.g. select entityid , rate from humanresources.employeepayhistory order by rate desc
+           e.g. select entityid, rate, RANK() OVER(ORDER BY Rate Desc) as RankByRate from humanresources.employeepayhistory order by BusinessEntityID 
+                SELECT TOP(10) BusinessEntityID, Rate, DENSE_RANK() OVER (ORDER BY Rate DESC) AS RankBySalary FROM HumanResources.EmployeePayHistory;
+                SELECT BusinessEntityID, Rate, NTILE(315) OVER (ORDER BY Rate DESC) AS Quartile FROM HumanResources.EmployeePayHistory;
+                SELECT ROW_NUMBER() OVER(ORDER BY SalesYTD DESC) AS Row, FirstName, LastName, ROUND(SalesYTD,2,1) AS "Sales YTD" FROM Sales.vSalesPersonWHERE TerritoryName IS NOT 
+                NULL AND SalesYTD <> 0;
+                !!!ALL TOGETHER!!!
+                SELECT ROW_NUMBER() OVER(ORDER BY SalesYTD DESC) AS Row, 
+	     NTILE(4) OVER (ORDER BY SalesYTD DESC) AS Quartile,
+	     RANK() OVER (ORDER BY SalesYTD DESC ) AS 'Rank',
+	     DENSE_RANK() OVER (ORDER BY SalesYTD DESC) AS DenseRank,
+                FirstName, LastName, ROUND(SalesYTD,2,1) AS "Sales YTD" 
+                FROM Sales.vSalesPerson
+                WHERE TerritoryName IS NOT NULL AND SalesYTD <> 0;
