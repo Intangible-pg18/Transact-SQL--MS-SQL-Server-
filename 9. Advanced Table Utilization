@@ -1,0 +1,52 @@
+Utilizing memory-: Sometimes a table is needed for a short period of time. Maybe used just by a single query or stored procedure OR used by a no. of actions but over a 
+                   extended time period.
+                   Solution-: Use Virtual tables OR perform read/write operations on tables from memory intead of disk.
+                   Use -> Derived Tables.                  
+                          Table Variables.                  
+                          Common Table Expressions (CTE)
+                          
+Derived Table-: is a virtual table that is created and used within the scope of a query.
+                It is discarded when the query completes.
+                Can be considered as a temporary view.
+                Disadvantages-: The table is created every time the query is run.
+                                They don't utilize indexes. (Have to scan the whole table)
+                e.g. select * from (select firstname,lastname from person.person) as dperson where lastname like 'I%'
+        
+Table Variable-: e.g. DECLARE @MTL as TABLE
+                       (FirstName varchar(40),
+                        LastName varchar(40),
+                        Orders int,
+                        OrderTot int)
+                        
+                      Insert into @MTL 
+                       (FirstName,LastName,Orders,OrderTot)
+                      select p.FirstName, p.LastName, COUNT(*), SUM(soh.TotalDue)
+                      from person.person p
+                      join
+                      sales.SalesOrderHeader soh
+                      on
+                      p.BusinessEntityID=soh.SalesPersonID
+                      group by Firstname, Lastname
+                          
+Common Table Expression-: is a more readable form of a derived table.
+                          It is declared once.
+                          e.g. WITH dperson (lastname,firstname)
+                               AS
+                                 (select lastname,firstname from person.person)
+                               select lastname,firstname from dperson
+                               where lastname like 'I%'
+                          
+Temporary Tables-: a physical table that exists temporarily in the TempDB database.
+                   Exists as long as it is being used.
+                   Types-: Local-: Created with a #prefix (e.g. #parts)
+                                   Visible only to the user who created it in the current connection.
+                                   Deleted when the user disconnects.
+                           Global-: Created with a ##prefix (e.g. ##parts)
+                                    Visible to any user in the database.
+                                    Deleted when the user disconnects if no one else is using it.
+                   Advantages-: Supports Indexes.
+                                Better performance for very large datasets.
+                                Utilizes less memory than other options.
+                   Disadvantages-: Uses disk based read-write operations (slow).
+                   e.g. create table #mark
+                        (lname varchar (10))               
