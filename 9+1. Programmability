@@ -1,0 +1,141 @@
+Stored Procedures-:  A collection of T-SQL code that is executed when called by a particular name.
+                     Can accept input parameters.
+                     Can return output parameteres to the calling 
+                     Contains programming statements
+                     Returns a status value indicating success or failure
+                     Types-: User-defined-: Can be created in a user defined database or all system databases except the Resource database.
+                             Temporary-: A form of user-defined procedures. Stored in the tempdb database. Can be local or global.  
+                             System-: Included with SQL Server. Begin with the prefix sp_
+                             Extended User-defined-: Used to create external routines in languages like C. Implemented as DLLs that SQL Server can dynamically load 
+                                                     & run.                             
+                     Advantage-: Reduces network traffic -> Only the name of the stored procedure is sent over the network
+                                 Code reusability.
+                                 Improved performance ->  A stored procedure is compiled the first time it is executed.
+                                                          And execution plan is stored that can be used on subsequent executions.
+                     e.g. Creation-: CREATE PROC GetPhone
+                                     AS
+                                     select p.lastname + p.firstname Name, pp.phonenumber
+                                     from person.person p
+                                     join
+                                     person.personphone pp
+                                     on
+                                     p.businessentityid=pp.businessentityid
+                                     where lastname='Abel'
+                          Input Parameters-: ALTER PROC GetPhone
+                                             @lastname varchar(40)='Abel'
+                                             AS
+                                             select p.lastname + p.firstname Name, pp.phonenumber
+                                             from person.person p
+                                             join
+                                             person.personphone pp
+                                             on
+                                             p.businessentityid=pp.businessentityid
+                                             where lastname=@lastname     ->Calling-: GetPhone 'Jones'
+                          Output Parameters-: CREATE PROC mll
+                                              @lname varchar(40),
+                                              @numrows int=0 OUTPUT
+                                              as
+                                              select LastName from Person.Person
+                                              where LastName like @lname
+                                              set @numrows=@@rowcount
+                                              Declare @retrows int
+                                              exec mll 'B%', @numrows=@retrows OUTPUT;
+                                              select @retrows as 'Rows'                 
+                                                          
+CASE logic-: Used for categorizing columns based on individual values.
+            e.g. select salesordernumber,customerid,totaldue,
+                  CASE
+                   WHEN totaldue<2500 THEN 'LOW'
+                   WHEN totaldue>2500 AND totaldue<10000 THEN 'AVG'
+                   WHEN totaldue>10000 THEN 'HIGH'
+                  END 
+                  as 'Customer Rating'
+                 from sales.salesorderheader
+                2. select 
+	                  MONTH(OrderDate) 'Month',
+	                  SUM(CASE YEAR(OrderDate) WHEN 2005 THEN 1 ELSE 0 END) AS Orders,
+	                  SUM(CASE YEAR(OrderDate) WHEN 2005 THEN Totaldue ELSE 0 END) AS 'Total Value'
+                    from
+	                  sales.salesorderheader
+                    group by Month(orderdate)
+                    order by Month(orderdate) asc
+               
+Handling Errors-: TRY & CATCH block-: A group of statements are enclosed between BEGIN TRY and END TRY
+                                      If an error occurs in the TRY block, control is passed to the CATCH block
+                                      Note-: Only the errors with severity error level higher than 10 are catched.
+                                      Error functions-: ERROR_NUMBER(), ERROR_SEVERITY, ERROR_STATE, ERROR_PROCEDURE, ERROR_LINE, ERROR_MESSAGE
+                  e.g. BEGIN TRY
+                        select 1/0
+                       END TRY
+                       BEGIN CATCH
+                         SELECT
+                            ERROR_NUMBER() AS ErrorNumber,
+                            ERROR_SEVERITY AS Error_Severity, 
+                            ERROR_STATE AS Error_State, 
+                            ERROR_PROCEDURE AS Error_Procedure, 
+                            ERROR_LINE AS Error_Line, 
+                            ERROR_MESSAGE AS Error_Message
+                       END CATCH
+                       
+Functions-: Types-: Built-In (AVG,COUNT,SUM,MONTH etc)
+                    User-Defined-: Scalar-: e.g. CREATE FUNCTION TandF
+                                                 ( @tax money,
+                                                   @freight money
+                                                 )
+                                                 RETURNS INT
+                                                 AS
+                                                 BEGIN
+                                                  RETURN @tax + @freight
+                                                 END
+                                                 
+                                                 select salesorderid, dbo.TandF(TaxAmt, Freight) 'Tax/Freight
+                                                 from sales.salesorderheader
+                                                
+            Cannot-: Apply Schema or data changes
+                     Create or access temp tables
+                     Call a stored procedure
+                     Execute dynamic SQL
+                     
+Dynamic SQL-: is a technique that allows a query to be handled by the compiler in a different manner.
+              Allows variables to be used for many literals that simply cannot be done using standard T-SQL.
+              Its causes that T-SQL statement to be built dynamically at runtime.
+              e.g. select COUNT(*) from person.person
+                   
+                   DECLARE 
+                     @tbl varchar(50)
+                     @sqstr Nvarchar(MAX)
+                   SET 
+                     @tbl='person.person'
+                     @sqstr= N'SELECT COUNT(*) FROM' + @tbl
+                   EXEC sp_executesql @sqstr
+                 
+GUIDs-: Globally Unique Identifier is a generated value while is 4 byte (128 bits) in length and is unique across tables, database, server etc.
+        By generating a GUID and inserting it into rows in out tables, we provide a way to uniquely identify the row regardless of where or how we use it.
+        e.g. CREATE TABLE UsingGUIDs //using NEWID()
+             ( ID uniqueidentifier,
+               lastname varchar(40),
+               firstname varchar(40) )
+              INSERT INTO UsingGUIDs
+              VALUES
+              (NewID(), 'long', 'mark'),(NewID(),'jones', 'frank')
+              select * from UsingGUIDs
+               **********OR************
+              CREATE TABLE UsingGUIDs //using default type variable with newid()
+             ( ID uniqueidentifier DEFAULT NEWID(),
+               lastname varchar(40),
+               firstname varchar(40) )
+              INSERT INTO UsingGUIDs
+              (lastname,firstname)
+              VALUES
+              ('long', 'mark'),('jones', 'frank')
+              select * from UsingGUIDs
+              //using newsequentialid() -:
+              CREATE TABLE UsingGUIDs //using default type variable with newsequentialid()
+             ( ID uniqueidentifier DEFAULT NEWSEQUENTIALID(),
+               lastname varchar(40),
+               firstname varchar(40) )
+              INSERT INTO UsingGUIDs
+              (lastname,firstname)
+              VALUES
+              ('long', 'mark'),('jones', 'frank')
+              select * from UsingGUIDs                               
