@@ -1,0 +1,45 @@
+Triggers-: are stored procedure that executes automatically whenever an UPDATE,INSERT,DELETE gets executed on a table.
+           Types-: AFTER trigger-: is fired after all statements in the triggering SQL statement has executed successfully OR it fires after data modifications have
+                                   been made to the table.
+                   INSTEAD OF trigger-: is fired INSTEAD of the triggering SQL statement OR it fires before data modifications have been made to the table.
+           Creation-: CREATE TRIGGER
+           Deletion-: DROP TRIGGER
+           Disable-: DISABLE TRIGGER or ALTER TABLE (will exist but won't fire)
+           Enable-: ENABLE TRIGGER or ALTER TABLE
+           
+Inserted & Deleted tables-: Any DML (Data Modification Language) query based trigger statements uses these two kinda tables.
+                            They are temporary, memory resident tables.
+                            SQL Server automatically creates and manages these tables.
+                            The tables are available to the trigger's code until the trigger is completed.
+                            Working-: Consider a situation where you want to modify a row in a table then the original row is sent to the Deleted table and the new one
+                            is sent to the Inserted table. It helps us to check what was deleted at the first place.
+                            
+Example-: Insert trigger-: CREATE TABLE trigx
+                           ( lastname varchar(50),
+                             firstname varchar(50),
+                           )
+          
+                           CREATE TRIGGER notify
+                           ON trigx
+                           FOR INSERT
+                           AS 
+                           print 'ATTENTION!!!'
+                           print 'A row was inserted into the trigx table'
+                           SELECT 'Then inserted data was: ', * from inserted
+                           SEELCT * from trigx
+          
+                           INSERT INTO trigx
+                           VALUES
+                           ('james','jack'),('james','frank'),('long','mark')
+            Update trigger-: CREATE TRIGGER modtrig
+                             ON trigx
+                             FOR UPDATE
+                             AS
+                             print 'ATTENTION!!!'
+                             SELECT 'DELETED-: The org data was: ', * from deleted
+                             SELECT 'INSERTED-: The new data is: ', * from inserted
+                             SELECT * from trigx
+                             
+                             UPDATE trigx
+                             SET lastname='longly'
+                             WHERE firstname='mark' and lastname='long'
