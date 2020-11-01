@@ -1,0 +1,69 @@
+Transaction-: is a logical unit of work. Could involve various steps. e.g.-:
+              1. Check to be sure the items are in stock to fill the order.
+              2. Check to make sure we can sell the product in the customer's state.
+              3. Check to make sure the customer has a license.
+              4. Check the in-house credit rating of the customer.
+              5. Enter the order into the database.
+              etc
+              The ACID acronym describes the properties of a transaction
+               Atomicity-: Every transaction is a atomic unit of work. All changes succeed or none.
+               Consistency-: Every transaction leaves the database in a consistent state based on object and database constraints.
+               Isolation-: All transactions look as though they occur in isolation from others in regard to database changes.
+               Durability-: Every transaction survives an interruption of service.
+               
+Concurrency-: refers to the fact that multiple people will be working with the same database simultaneously. Their actions cannot adversely affect those of other 
+              person.
+              SQL Server uses a system of data locks to prevent this.
+              Types of lock-: Shared locks-: Multiple people can read the same data. Read-mode.
+                              Exclusive locks-: When changes are being made to data, no one else can access it.
+              Types of concurrency control-:
+                 Pessimistic concurrency control-: Once a user begins performing an action on data a lock is applied (others cannot perform any operation until the org
+                                                   user releases it.
+                 Optimistic concurrency control-: Data is not locked when user read it. When a user updates data, the system checks to see if another user changed the
+                                                  data after it was read...if so, an error is released.
+               SQL Server concurrency can be adjusted via Transaction Isolation Levels. 
+               Types-: READ COMMITTED-: Data being read acuires a shared lock ; any data being changed has an exclusive lock until the transaction is completed
+                       (committed or rolled back).
+                       READ UNCOMMITTED-: Allows the readers to read uncommitted data. Data can be read that may be rolled back to its initial value if a transaction
+                                          fails or may be it changes. Called Dirty Read.
+                       REPEATABLE READ-: Insures that data read in a transaction can be re-read later in a transaction.
+                       SERIALIZABLE-: The strongest level. Will result in most lockings. 
+                       
+Modes of User Transactiopns-: 1. Autocommit-:  Single data modifications are executed in  the context of a transaction.
+                                               Automatically committed when successful, rolled back if the statement fails.
+                              2. Implicit-: Every command that is issued starts a transaction, but does not automatically commit or roll back
+                                            You must issue a COMMIT or ROLLBACK statement to finish the transaction.
+                              3. Explicit-: The programmer must issue the BEGIN TRANSACTION command to start the transaction and issue a COMMIT or ROLLBACK command to end it.
+                              Note-: If changes are made to the database that disappear after a database re-start, IMPLICIT transaction may be enabled....no COMMIT or ROLLBACK was
+                                     ever issued.
+                              e.g. Transaction-: BEGIN TRAN ML
+                                                 UPDATE Person.Person
+                                                 SET LastName='Long'
+
+                                                 --Oh no! All LastNames were changed...
+                                                 select * from Person.Person
+
+                                                 --Let's ROLLBACK our transaction and undo our UPDATE 
+                                                 ROLLBACK TRAN ML
+
+                                                 --The orginal data is back
+                                                 select * from Person.Person
+                                                 
+                                   Locking-: BEGIN TRAN MTL
+                                             UPDATE Person.Person
+                                             SET FirstName='Jack'
+                                             WHERE FirstName='Terri' and LastName='Duffy'
+
+                                             --When you have executed the two lines above...
+                                             --Click the New Query button (this will create a new connection)
+                                             --IN THE NEW QUERY WINDOW...type this
+                                             SELECT * from Person.Person
+                                             WHERE BusinessEntityID=2
+                                             --Note that the select statement will not complete...it just sits there
+                                             --It is being blocked by the UPDATE statement
+
+                                             --Return to the first query window and execute this...
+                                             COMMIT TRANSACTION MTL
+                                             --When you return to the UPDATE query window,
+                                             --the command will be completed...
+                                             --It executed as soon as you removed the lock                
