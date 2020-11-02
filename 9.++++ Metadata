@@ -1,0 +1,26 @@
+Metadata-: Data about data. e.g. A list of the tables in our database.
+                                 A list of stored procedures in out database.
+                                 A list of the columns in a table.
+                                 The data types of the columns in a table.
+                                 The Primary key columns in a table.
+
+Methods of querying data-: Catalog Views-: Not affected by changes in a underlying catalog table. Note-: Avoid using SELECT * to get info.
+                                           The sys.columns catalog view includes an is_identity column.
+                                           e.g. select * from sys.tables   --all the tables in our database
+                                                select * from sys.all_columns   --all the columns in all the tables
+                                                select * from sys.tables where name='Person'  --Person Table's info
+                                                select * from sys.all_columns where object_id=1765581328  --all the columns of the person table.
+                                                OR
+                                                select * from sys.all_columns where boject_id= (select object_id from sys.tables where name='Person')
+                           Information Schema Views-: are constructed to comply with ANSI SQL-92 standards. (Can be used on any other database system). Do not include 
+                                                      info on objects or functions that are not part of the SQL-92 standard. The INFORMATION_SCHEMA.COLUMNS views does
+                                                      not include any info on identity columns. 
+                                                      e.g. select * from INFORMATION_SCHEMA.TABLES   --all tables in the database
+                                                           select * from INFORMATION_SCHEMA.TABLES order by TABLE_SCHEMA, TABLE_NAME
+                                                           select * from INFORMATION_SCHEMA.COLUMNS where TBALE_NAME='Vendor'  -- all the columns in the vendor table
+                           System Stored Procedures-: Provide many administrative /informative functionalities-: sp_adduser adds a new user to the current database.
+                                                      sp_password adds or changes a password for a login.
+                                                      e.g. exec sp_spaceused
+                                                           exec sp_spaceused 'Person.Person'
+                                                           exec sp_depends 'Person.Person'
+                                                           
