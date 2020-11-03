@@ -1,0 +1,19 @@
+XML-: Extensible Markup Language. Formats data in a human-readble and machine-readable hierarchical structure.
+      Standard format for data. XML-based languages-: RSS, SOAP, XHTML, etc. Note-: It is case sensitive. XML was designed to carry data - with focus on what data is.
+      The XML language has no predefined tags.
+      Terms-: Tag-: A markup construct beginnning with < and ending with >. Also called a start tag.
+              End tag-: A markup construct beginnning with </ and ending with >
+              Element-: A construct that begins with a start tag and ends with a matching end tag. e.g. <FirstName>Bob</FirstName>
+              Attribute-: A name/value pair that inside a start tag. e.g. <Employee paygrade=5>Bob Smith</Employee>
+              Schema-: Structure and layout of the document.
+              
+Outputting XML from queries-: The T-SQL SELECT statement can produce result sets in XML format.
+                              Methods-: FOR XML RAW
+                                           e.g. select TOP 3 firstname,lastname from Person.Person
+                                                FOR XML RAW ('Employee'), ELEMENTS, ROOT ('Employees')
+                                        FOR XML AUTO
+                                           e.g. select top 3 firstname,lastname from person.person
+                                                FOR XML AUTO, ELEMENTS, XMLSCHEMA('TestSchema')
+                                        FOR XML PATH
+                                           e.g. select top 3 businessentityid as [@id], firstname,lastname from person.person
+                                                FOR XML PATH ('Employee'), ROOT('Employees')
